@@ -9,6 +9,7 @@ There are links attached to each title, for you to read up and understand what t
     ```rust
     fn main() {
         // Write your code here
+    	println!("Hello, world!");
     }
     ```
     
@@ -17,26 +18,49 @@ There are links attached to each title, for you to read up and understand what t
 	```rust
 	fn main() {
 		for n in 1..=100 {
+ 			let mut flag=0;
+ 			if n % 3 == 0 {
+ 				flag=1;
+ 				print!("Fizz");
+ 			}
+ 			if n % 5 == 0 {
+ 				flag=1;
+ 				print!("Buzz");
+			}
+ 			if flag == 0{
+ 				print!("{n}");
+ 			}
+			print!("\n");
 		}
-	}
+	}	
 	```
 	
 3. [**Is anyone there?**](https://doc.rust-lang.org/book/ch06-01-defining-an-enum.html)
 	A very common design question, iswhat to return when nothing is there to return? For example, in a tree data structure, what do we return as a child of a node, when the node has no children? In C++, we usually return a `nullptr`, but this can lead to a myriad of issues - trying to dereference a `nullptr` just being one of them. This question has two subparts.
 	a) Find an element in an array: 
 	```rust
-	fn find_element(arr: &[i32], target: i32) -> /*what should the return type be?*/ {
-    	for (i, &val) in arr.iter().enumerate() {
-        	// What should we check here?
-    	}
-    	// What should we return here?
+	fn find_element(arr: &[i32], target: i32) -> isize {
+	    for (i, &val) in arr.iter().enumerate() {
+	        if val == target{
+ 		    let m = i as isize;
+	            return m; 
+	        }
+	    }
+ 	return -1;
 	}
 	```
 	
 	b) Use a match statement to print the element's index if it was found, and print "Not Found" otherwise.
 	```rust
 	let numbers = vec![1, 2, 3, 4, 5];
-	// Fill in your code here
+	let target:i32 = 2;
+	let g = find_element(&numbers, target);
+ 	if g == -1{
+ 		println!("Not Found");
+	}
+ 	else{
+ 		println!("{g}");
+ 	}
 	```
 	
 4. [**Owners and Borrowers**](https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html)
@@ -45,7 +69,7 @@ There are links attached to each title, for you to read up and understand what t
 	```rust
 	fn main() {
     	let s1 = String::from("Hello");
-    	let s2 = //??? Borrow s1
+    	let s2 = &s1;
     }
     ```
     
@@ -55,6 +79,7 @@ There are links attached to each title, for you to read up and understand what t
     	let s1 = String::from("Hello");
     	let s2 = s1; 
     	println!("{}", s1);
+    //here ownership is transferred from s1 to s2 so when we print we should print s2 or else it would show error//
     }
     ```
     
@@ -62,5 +87,6 @@ There are links attached to each title, for you to read up and understand what t
     ```rust
     fn modify_string(s: &mut String) {
     	s.push_str("This is pushed");
-	}
+
+	Here, mutable borrowing is taking place. The function is taking a mutable reference from s and passing into the body of the function. Further, the second line of code is also valid. Since we have taken mutable reference from s, we are allowed to change it without gaining ownership , which is happening in second line of code. This function appends "This is pushed" to the original string. The drawback is that we cant define any immutable references in the function ahead as then the scope of immutable reference and mutable reference would overlap and would show error. We also cant take another mutable reference because of the same reason. In the code, we are doing mutable borrowing which is different from immutable borrowing and taking ownership. When you take ownership, you have complete control over the value of the string and can change and do whatever you want. In immutable borrowing, we borrow the value of the string and use it. We are only allowed to use it without changing its value. In mutable borrowing, we are borrowing the value from the string and are also allowed to change its value as long as it is defined. The original string has complete control and can still use it whenever it wants.
 	```
